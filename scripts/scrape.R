@@ -222,7 +222,7 @@ stopifnot(nrow(unique(response.dat[, .(id, question)])) ==
 response.dat[, num.vote := numerical.vote(response.dat$vote)]
 
 # Save RDS-style for Shiny apps
-saveRDS(response.dat, file = "igm.rds")
+saveRDS(response.dat, file = "data/igm.rds")
 
 
 rm(list = ls())

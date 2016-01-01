@@ -1,10 +1,11 @@
+# User interface
 ui <- fluidPage(
     theme = shinytheme("cosmo"),
     titlePanel("Situating consensus for the IGM surveys"),
     checkboxInput("show", "Description", value = TRUE),
     conditionalPanel(
         condition = "input.show == true",
-        HTML(paste(readLines("description.txt"), collapse = ""))
+        HTML(paste(readLines("text/description.txt"), collapse = ""))
     ),
     fluidRow(
         column(
@@ -45,7 +46,7 @@ ui <- fluidPage(
                     checkboxInput("show_vs", "Explanation"),
                     conditionalPanel(
                         condition = "input.show_vs == true",
-                        HTML(paste(readLines("description_vs.html"),
+                        HTML(paste(readLines("text/description_vs.html"),
                                    collapse = ""))
                     ),
                     plotOutput("vs", height = "600px",
@@ -58,7 +59,7 @@ ui <- fluidPage(
                     checkboxInput("show_triangle", "Explanation"),
                     conditionalPanel(
                         condition = "input.show_triangle == true",
-                        HTML(paste(readLines("description_triangle.html"),
+                        HTML(paste(readLines("text/description_triangle.html"),
                                    collapse = ""))
                     ),
                     plotOutput("triangle", height = "750px",

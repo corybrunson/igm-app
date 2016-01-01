@@ -1,3 +1,10 @@
+# Load and polish data
+source("scripts/polish.R")
+
+# Source triangle coordinate functions (used in server script)
+source("scripts/fun_coord.R")
+
+# Server
 server <- function(input, output) {
     
     # Highlight by key strings
