@@ -1,10 +1,15 @@
 # Install and load packages
+if(FALSE) {
 for (pkg in c("data.table", "shiny", "shinythemes")) {
     if (!require(pkg, character.only = TRUE)) {
         install.packages(pkg)
         stopifnot(require(pkg, character.only = TRUE))
     }
 }
+}
+library(data.table)
+library(shiny)
+library(shinythemes)
 
 # Scrape data if necessary
 if (!file.exists("data/igm.rds")) source("scripts/scrape.R")
