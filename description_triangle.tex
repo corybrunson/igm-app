@@ -1,0 +1,15 @@
+\documentclass{article}
+
+\begin{document}
+
+This scatterplot arranges the survey questions on the 2-simplex---the triangle connecting the points \((1,0,0)\), \((0,1,0)\), and \((0,0,1)\) in 3-space and its interior---according to the proportions of panelists who agree, disagree, and are uncertain with the question. Each possible response corresponds to one vertex of the simplex, and the responses may be weighted by strength of (dis)agreement and by confidence.
+
+For each panelist \(i=1,\ldots,N\) and each question \(j=1,\ldots,M\), encode \(i\)'s response to \(j\) as strong agreement (\(r_{ij}=+1+\sigma\)), agreement (\(r_{ij}=+1\)), uncertainty (\(r_{ij}=0\)), disagreement (\(r_{ij}=-1\)), or strong disagreement (\(r_{ij}=-1-\sigma\)), where \(\sigma\in[0,1]\) is a tuning parameter controlled by the user. (\(r_{ij}\) is not defined if \(i\) left no opinion on \(j\).) The panelists also recorded their confidence \(C_{ij}\in[1,9]\) in their answers; we standardize this measure to \(C'_{ij}=C_{ij}/\overline{C}\) and calculate {\em confidence weights} \(c_{ij}=1-\gamma+\gamma C'_{ij}\), where \(\gamma\in[0,1]\) is a tuning parameter, also controlled by the user, that interpolates between \(c_{ij}\equiv 1\) and \(c_{ij}=C'_{ij}\).
+
+The {\em agreement} on question \(j\) is \(a(j)=\sum_{r_{ij}>0}{c_{ij}r_{ij}}\), the sum of the agreeing responses, weighted by both confidence and strength of agreement; the {\em disagreement} \(d(j)\) is defined analogously. The {\em uncertainty} is \(u(j)=\sum_{r_{ij}=0}{c_{ij}}\), the weighted sum of the uncertain responses. The standardized coordinates \((a(j),d(j),u(j))/(d(j)+a(j)+u(j))\) are then projected to two dimensions via linear transformations:
+\begin{eqnarray*}
+x(j) &= &({\sqrt{3}}/{2})\times u(j) - {1}/{2\sqrt{3}} \\
+y(j) &= &({1}/{2})\times a(j) - ({1}/{2})\times d(j)
+\end{eqnarray*}
+
+\end{document}
