@@ -39,6 +39,9 @@ ui <- fluidPage(
             tabsetPanel(
                 id = "tab",
                 tabPanel(
+                    "Data table", value = "dt"
+                ),
+                tabPanel(
                     "Consensus-Uncertainty", value = "vs",
                     checkboxInput("show_vs", "Explanation"),
                     conditionalPanel(
@@ -46,23 +49,27 @@ ui <- fluidPage(
                         HTML(paste(readLines("text/description_vs.html"),
                                    collapse = ""))
                     ),
-                    plotOutput("vs", height = "600px",
+                    plotOutput("vs", height = "400px",
                                click = "plot_click_vs",
                                brush = brushOpts(id = "plot_brush_vs",
-                                                 delayType = "debounce"))
+                                                 delayType = "debounce",
+                                                 resetOnNew = TRUE),
+                               dblclick = "plot_dblclick_vs")
                 ),
                 tabPanel(
-                    "Agreement-Uncertainty", value = "triangle",
-                    checkboxInput("show_triangle", "Explanation"),
+                    "Agreement-Uncertainty", value = "tri",
+                    checkboxInput("show_tri", "Explanation"),
                     conditionalPanel(
-                        condition = "input.show_triangle == true",
-                        HTML(paste(readLines("text/description_triangle.html"),
+                        condition = "input.show_tri == true",
+                        HTML(paste(readLines("text/description_tri.html"),
                                    collapse = ""))
                     ),
-                    plotOutput("triangle", height = "750px",
-                               click = "plot_click",
-                               brush = brushOpts(id = "plot_brush",
-                                                 delayType = "debounce"))
+                    plotOutput("tri", height = "667px",
+                               click = "plot_click_tri",
+                               brush = brushOpts(id = "plot_brush_tri",
+                                                 delayType = "debounce",
+                                                 resetOnNew = TRUE),
+                               dblclick = "plot_dblclick_tri")
                 )
             ),
             dataTableOutput("plot_topics")
