@@ -24,9 +24,11 @@ ui <- fluidPage(
                 sliderInput("str.wt",
                             "Weight strong (dis)agreement",
                             0, 1, 0),
+                checkboxInput("str.tr", "Show trace"),
                 sliderInput("conf.wt",
                             "Weight confidence",
-                            0, 1, 0)
+                            0, 1, 0),
+                checkboxInput("conf.tr", "Show trace")
             ),
             wellPanel(
                 #h4("Appearance"),
