@@ -3,7 +3,7 @@ Scatterplotting agreement and uncertainty among the IGM panel survey responses
 
 This R Shiny App produces two dynamic scatterplots of different measures of uncertainty and agreement in the responses collected from academic economists by the [Initiative on Global Markets](http://www.igmchicago.org/) at the University of Chicago Booth School of Business. It should be live [here](https://corybrunson.shinyapps.io/igm-app).
 
-I've tweaked the scrape script several times as i've discovered new errors in the results. If you find any errors, please let me know—or feel free to correct them and send a pull request. I'll scrape the results at least twice a year to keep the app updated.
+I've tweaked the scrape script several times as i've discovered new errors in the results. If you find any errors, please let me know—or feel free to correct them and send a pull request. I'll scrape the results and redeploy the app at least semesterly.
 
 ## Acknowledgments
 

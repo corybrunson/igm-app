@@ -202,6 +202,11 @@ server <- function(input, output) {
                    col = rgb(0, 0, 1, sqrt(input$alpha)))
         }
         
+        # Legend
+        n_questions <- length(unique(dat$question))
+        legend("topright",
+               legend = paste("Showing", n_questions, "survey questions"),
+               pch = NA, box.lty = 0)
     })
     
     # Consensus triangle plot!
@@ -209,9 +214,6 @@ server <- function(input, output) {
         
         # Retrieve uniquified data
         dat <- uniqDat()
-        
-        # Invert y-values if desired
-        xsgn <- if (input$inv) -1 else 1
         
         # Plotting window
         xran <- range(xsgn * x(c(1, 0, 0)), xsgn * x(c(0, 0, 1)))
@@ -291,6 +293,10 @@ server <- function(input, output) {
                    col = rgb(0, 0, 1, sqrt(input$alpha)))
         }
         
+        # Legend
+        n_questions <- length(unique(dat$question))
+        legend("topright", legend = paste("Number of questions:", n_questions),
+               pch = NA, box.lty = 0)
     })
     
     output$plot_topics <- renderDataTable({

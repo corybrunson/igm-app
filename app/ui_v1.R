@@ -19,8 +19,7 @@ ui <- fluidPage(
             wellPanel(
                 h4("Appearance"),
                 sliderInput("cex.base", "Size", .1, .5, .3),
-                sliderInput("alpha", "Transparency", 0, 1, .2),
-                checkboxInput("inv", "Invert triangle")
+                sliderInput("alpha", "Transparency", 0, 1, .2)
             )
         ),
         column(

@@ -13,10 +13,10 @@ ui <- fluidPage(
             wellPanel(
                 #h4("Subsetting"),
                 selectInput(inputId = "panelist",
-                            label = "Panelist",
+                            label = "Answered by this panelist:",
                             choices = c("-", sort(unique(allDat$panelist)))),
                 checkboxInput("p_subset", "Hide others"),
-                textInput("topic", "Topic, e.g. 'gree(k|ce)':"),
+                textInput("topic", "Keyword, e.g. 'gree(k|ce)':"),
                 checkboxInput("t_subset", "Hide others")
             ),
             wellPanel(
@@ -24,17 +24,16 @@ ui <- fluidPage(
                 sliderInput("str.wt",
                             "Weight strong (dis)agreement",
                             0, 1, 0),
-                checkboxInput("str.tr", "Trace"),
+                checkboxInput("str.tr", "Show trace"),
                 sliderInput("conf.wt",
                             "Weight confidence",
                             0, 1, 0),
-                checkboxInput("conf.tr", "Trace")
+                checkboxInput("conf.tr", "Show trace")
             ),
             wellPanel(
                 #h4("Appearance"),
-                sliderInput("cex.base", "Size", .1, .5, .3),
-                sliderInput("alpha", "Transparency", 0, 1, .2),
-                checkboxInput("inv", "Invert triangle")
+                sliderInput("cex.base", "Point size", .1, .5, .3),
+                sliderInput("alpha", "Transparency", 0, 1, .2)
             )
         ),
         column(
