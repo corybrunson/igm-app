@@ -246,6 +246,8 @@ server <- function(input, output) {
             } else {
                 brushedPoints(uniqDat(), input$plot_brush_tri, "x", "y")
             }
+        } else if (input$tab %in% c("specs", "compare", "discuss")) {
+            data.frame()
         } else {
             uniqDat()
         }

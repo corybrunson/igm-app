@@ -95,6 +95,9 @@ server <- function(input, output) {
         dat
     })
     
+    # Versus plot range
+    range_vs <- reactiveValues(x = c(0, 1), y = c(-1/5, 1))
+    
     # Versus plot!
     output$vs <- renderPlot({
         
@@ -102,8 +105,8 @@ server <- function(input, output) {
         dat <- uniqDat()
         
         # Plotting window
-        Xran <- c(0, 1)
-        Yran <- c(-1/5, 1)
+        Xran <- range_vs$x
+        Yran <- range_vs$y
         plot(x = c(), y = c(), bty = "n",
              xlim = Xran, ylim = Yran,
              xlab = "Uncertainty", ylab = "Consensus")
@@ -133,16 +136,38 @@ server <- function(input, output) {
                pch = NA, box.lty = 0)
     })
     
-    # Consensus triangle plot!
-    output$triangle <- renderPlot({
+    # Versus plot zoom
+    observeEvent(input$plot_dblclick_vs, {
+        
+        # Assign brush values
+        brush_val <- input$plot_brush_vs
+        
+        # If brush, zoom; otherwise, reset
+        if (is.null(brush_val)) {
+            range_vs$x <- c(0, 1)
+            range_vs$y <- c(-1/5, 1)
+        } else {
+            range_vs$x <- c(brush_val$xmin, brush_val$xmax)
+            range_vs$y <- c(brush_val$ymin, brush_val$ymax)
+        }
+    })
+    
+    # Versus plot range
+    param_tri <- reactiveValues(x = range(x(c(1, 0, 0)), x(c(0, 0, 1))),
+                                y = range(y(c(1, 0, 0)), y(c(0, 1, 0))),
+                                asp = 1)
+    
+    # Triangle plot!
+    output$tri <- renderPlot({
         
         # Retrieve uniquified data
         dat <- uniqDat()
         
         # Plotting window
-        xran <- range(x(c(1, 0, 0)), x(c(0, 0, 1)))
-        yran <- range(y(c(1, 0, 0)), y(c(0, 1, 0)))
-        plot(x = c(), y = c(), asp = 1, axes = FALSE,
+        xran <- param_tri$x
+        yran <- param_tri$y
+        plot(x = c(), y = c(), axes = FALSE,
+             asp = param_tri$asp,
              xlim = xran + .1 * c(-1, 1) * diff(xran),
              ylim = yran + 0 * c(-1, 1) * diff(yran),
              xlab = "", ylab = "")
@@ -187,40 +212,76 @@ server <- function(input, output) {
                pch = NA, box.lty = 0)
     })
     
-    output$plot_topics <- renderDataTable({
+    # Triangle plot zoom
+    observeEvent(input$plot_dblclick_tri, {
         
-        # Which points
-        res <- if (input$tab == "vs") {
-            if (is.null(input$plot_brush_vs)) {
-                nearPoints(uniqDat(), input$plot_click_vs, "X", "Y")
-            } else {
-                brushedPoints(uniqDat(), input$plot_brush_vs, "X", "Y")
-            }
-        } else if (input$tab == "triangle") {
-            if (is.null(input$plot_brush)) {
-                nearPoints(uniqDat(), input$plot_click, "x", "y")
-            } else {
-                brushedPoints(uniqDat(), input$plot_brush, "x", "y")
-            }
+        # Assign brush values
+        brush_val <- input$plot_brush_tri
+        
+        # If brush, zoom; otherwise, reset
+        if (is.null(brush_val)) {
+            param_tri$x <- range(x(c(1, 0, 0)), x(c(0, 0, 1)))
+            param_tri$y <- range(y(c(1, 0, 0)), y(c(0, 1, 0)))
+            param_tri$asp <- 1
+        } else {
+            param_tri$x <- c(brush_val$xmin, brush_val$xmax)
+            param_tri$y <- c(brush_val$ymin, brush_val$ymax)
+            param_tri$asp <- NA
         }
-        if (nrow(res) == 0) return()
+    })
+    
+    # Interactive data tables
+    make_table <- function(dt) {
         
         # Links
-        res$date_link <- paste0('<a href="',
-                                 "http://www.igmchicago.org/",
-                                 "igm-economic-experts-panel",
-                                 "/poll-results?SurveyID=SV_",
-                                 res$id,
-                                 '" target="_blank">',
-                                 gsub("^0", "", format(res$date, "%d %b %Y")),
-                                 '</a>')
+        dt$date_link <- paste0('<a href="',
+                               "http://www.igmchicago.org/",
+                               "igm-economic-experts-panel",
+                               "/poll-results?SurveyID=SV_",
+                               dt$id,
+                               '" target="_blank">',
+                               gsub("^0", "", format(dt$date, "%d %b %Y")),
+                               '</a>')
         
         # Format
-        res[order(res$date),
-            .(Date = date_link,
-              Topic = topic,
-              Question = ifelse(question == "", "-", question),
-              Statement = statement)]
+        dt[order(dt$date),
+           .(Date = date_link,
+             Topic = topic,
+             Question = ifelse(question == "", "-", question),
+             Statement = statement)]
+    }
+    
+    # Triangle plot data table
+    output$dt_tri <- renderDataTable({
+        
+        # Which points
+        res <- if(is.null(input$plot_brush_tri)) {
+            nearPoints(uniqDat(), input$plot_click_tri, "X", "Y")
+        } else {
+            brushedPoints(uniqDat(), input$plot_brush_tri, "X", "Y")
+        }
+        if (nrow(res) == 0) return() else make_table(res)
         
     }, escape = FALSE)
+    
+    # Versus plot data table
+    output$dt_vs <- renderDataTable({
+        
+        # Which points
+        res <- if(is.null(input$plot_brush_vs)) {
+            nearPoints(uniqDat(), input$plot_click_vs, "X", "Y")
+        } else {
+            brushedPoints(uniqDat(), input$plot_brush_vs, "X", "Y")
+        }
+        if (nrow(res) == 0) return() else make_table(res)
+        
+    }, escape = FALSE)
+    
+    # Plotless data table
+    output$dt_dt <- renderDataTable({
+        
+        if (nrow(uniqDat())) return() else make_table(uniqDat())
+        
+    }, escape = FALSE)
+    
 }

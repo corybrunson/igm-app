@@ -1,0 +1,16 @@
+
+
+
+
+
+
+
+The Consensus Plot compares the extent of consensus among the panelists on a question to the extent of clear opinion on that question. The <b>consensus</b> is defined as the difference between the panelists who agree with each other (whether in agreement or disagreement with each statement) and those who disagree, as proportions of the number of pairings among those who were not uncertain. This statistic is adapted from the rank-correlation coefficient &#964;; the pairwise agreement and disagreement counts are called the <b>concordance</b> and <b>discordance</b>.
+
+<div class="p"><!----></div>
+This time, encode i's response to j as agreement (r<sub>ij</sub>=+1), disagreement (r<sub>ij</sub>=&#8722;1), or uncertainty (r<sub>ij</sub>=0). (These calculations ignore strong (dis)agreement.) The panelists also recorded their confidence C<sub>ij</sub> &#8712; [1,9] in their answers; we standardize this measure to C&#8242;<sub>ij</sub>=C<sub>ij</sub>/<span class="overacc2">&#x2015;</span>C and calculate <em>confidence weights</em> c<sub>ij</sub>=1&#8722;&#947;+&#947;C&#8242;<sub>ij</sub>, where &#947; is a tuning parameter, controlled by the user, that interpolates between c<sub>ij</sub> &#8801; 1 and c<sub>ij</sub>=C&#8242;<sub>ij</sub>.
+
+<div class="p"><!----></div>
+Write (i,j) if panelist i responded to question j. The <em>uncertainty</em> of question j is &#8721;<sub>(i,j)</sub>c<sub>ij</sub>(1&#8722;&#124;r<sub>ij</sub>&#124;)/&#8721;<sub>(i,j)</sub>c<sub>ij</sub>, the ratio of uncertain responses to all responses. The <em>consensus</em> of question j is calculated, analogously to the &#964;<sub>a</sub> statistic, as &#8721;<sub>(i,j),(i&#8242;,j)</sub>r<sub>ij</sub>r<sub>i&#8242;j</sub>/comb(&#8721;<sub>(i,j)</sub>&#124;r<sub>ij</sub>&#124;,2), the (unweighted) ratio of the difference between the numbers of agreements and of disagreements (concordance minus discordance) to the number of pairs of clear responses (comb(a,b)=a!/(b!(a&#8722;b)!)). (The minimum (unweighted) value of consensus-when the opining panelists are evenly split-is 1/n, where n is the number of opining panelists.)
+
+<div class="p"><!----></div>
