@@ -4,6 +4,8 @@ source("scripts/polish.R")
 # Source triangle coordinate functions (used in server script)
 source("scripts/fun_coord.R")
 
+library(dplyr)
+
 # Server
 server <- function(input, output) {
     
@@ -15,17 +17,21 @@ server <- function(input, output) {
         
         # Spotlight panelists
         if (input$panelist == "-") {
-            dat[, hl.panelist := FALSE]
+            dat$hl.panelist <- FALSE
         } else {
-            dat[, hl.panelist := panelist == input$panelist]
+            dat$hl.panelist <- (dat$panelist == input$panelist)
         }
-        dat[, hl.panelist := any(hl.panelist), by = list(id, question)]
         
         # Spotlight topics
-        dat[, hl.topic := grepl(tolower(input$topic),
-                                tolower(paste(topic, statement)))]
+        dat$hl.topic <- grepl(tolower(input$topic),
+                              tolower(paste(dat$topic, dat$statement)))
         if (all(dat$hl.topic)) dat$hl.topic <- FALSE
-        dat[, hl.topic := any(hl.topic), by = list(id, question)]
+        
+        # Group by ID and question
+        by_id_question <- group_by(dat, id, question)
+        dat <- mutate(by_id_question,
+                      hl.panelist = any(hl.panelist),
+                      hl.topic = any(hl.topic))
         
         # Return
         dat
@@ -37,38 +43,38 @@ server <- function(input, output) {
         # Retrieve highlighted data
         dat <- hlDat()
         
-        # Add vs coordinates to data table
-        dat[, X := sum((1 - input$conf.wt + input$conf.wt * stdconf) *
-                           as.numeric(agree == 0), na.rm = TRUE) /
-                sum(1 - input$conf.wt + input$conf.wt * stdconf, na.rm = TRUE),
-            by = list(id, question)]
-        dat[, Y := sum(apply(combn(sign(agree), 2), 2, prod), na.rm = TRUE) /
-                choose(length(which(agree != 0 & !is.na(agree))), 2),
-            by = list(id, question)]
+        # Group by ID and question
+        by_id_question <- group_by(dat, id, question)
         
-        # Add triangle coordinates to data table
-        dat[, x := x(c(sum((1 - input$conf.wt + input$conf.wt * stdconf) *
-                               (1 + input$str.wt * strong) *
-                               as.numeric(agree == -1),
-                           na.rm = TRUE),
-                       sum((1 - input$conf.wt + input$conf.wt * stdconf) *
-                               (1 + input$str.wt * strong) *
-                               as.numeric(agree == 1),
-                           na.rm = TRUE),
-                       sum((1 - input$conf.wt + input$conf.wt * stdconf) *
-                               as.numeric(agree == 0), na.rm = TRUE))),
-            by = list(id, question)]
-        dat[, y := y(c(sum((1 - input$conf.wt + input$conf.wt * stdconf) *
-                               (1 + input$str.wt * strong) *
-                               as.numeric(agree == -1),
-                           na.rm = TRUE),
-                       sum((1 - input$conf.wt + input$conf.wt * stdconf) *
-                               (1 + input$str.wt * strong) *
-                               as.numeric(agree == 1),
-                           na.rm = TRUE),
-                       sum((1 - input$conf.wt + input$conf.wt * stdconf) *
-                               as.numeric(agree == 0), na.rm = TRUE))),
-            by = list(id, question)]
+        # Add vs and triangle coordinates to data table
+        dat <- mutate(
+            by_id_question,
+            X = sum((1 - input$conf.wt + input$conf.wt * stdconf) *
+                        as.numeric(agree == 0), na.rm = TRUE) /
+                sum(1 - input$conf.wt + input$conf.wt * stdconf, na.rm = TRUE),
+            Y = sum(apply(combn(sign(agree), 2), 2, prod), na.rm = TRUE) /
+                choose(length(which(agree != 0 & !is.na(agree))), 2),
+            x = x(c(sum((1 - input$conf.wt + input$conf.wt * stdconf) *
+                            (1 + input$str.wt * strong) *
+                            as.numeric(agree == -1),
+                        na.rm = TRUE),
+                    sum((1 - input$conf.wt + input$conf.wt * stdconf) *
+                            (1 + input$str.wt * strong) *
+                            as.numeric(agree == 1),
+                        na.rm = TRUE),
+                    sum((1 - input$conf.wt + input$conf.wt * stdconf) *
+                            as.numeric(agree == 0), na.rm = TRUE))),
+            y = y(c(sum((1 - input$conf.wt + input$conf.wt * stdconf) *
+                            (1 + input$str.wt * strong) *
+                            as.numeric(agree == -1),
+                        na.rm = TRUE),
+                    sum((1 - input$conf.wt + input$conf.wt * stdconf) *
+                            (1 + input$str.wt * strong) *
+                            as.numeric(agree == 1),
+                        na.rm = TRUE),
+                    sum((1 - input$conf.wt + input$conf.wt * stdconf) *
+                            as.numeric(agree == 0), na.rm = TRUE)))
+        )
         
         # Return
         dat
@@ -80,16 +86,30 @@ server <- function(input, output) {
         # Retrieve weighted data
         dat <- xyDat()
         
+        # Tally panelists
+        num <- summarise(
+            group_by(dat, id, question),
+            count = n()
+        )
+        
         # Only one entry per question
-        dat <- unique(dat[, .(id, date, question, topic, statement, count,
-                              hl.panelist, hl.topic,
-                              X, Y,
-                              x, y)])
+        dat <- unique(subset(dat,
+                             select = c(id, date, question, topic, statement,
+                                        hl.panelist, hl.topic,
+                                        X, Y, x, y)))
+        
+        # Check row count
+        stopifnot(nrow(dat) == nrow(num))
         output$q <- renderText({ nrow(dat) })
         
+        # Merge count into dat
+        dat <- merge(dat, num, by = c("id", "question"))
+        
         # Subset
-        if (any(dat$hl.panelist) & input$p_subset) dat <- dat[hl.panelist == T]
-        if (any(dat$hl.topic) & input$t_subset) dat <- dat[hl.topic == T]
+        if (any(dat$hl.panelist) & input$p_subset)
+            dat <- dat[hl.panelist == TRUE, ]
+        if (any(dat$hl.topic) & input$t_subset)
+            dat <- dat[hl.topic == TRUE, ]
         if (all(dat$hl.topic)) dat$hl.topic <- FALSE
         
         dat
@@ -130,7 +150,7 @@ server <- function(input, output) {
         }
         
         # Legend
-        n_questions <- nrow(unique(dat[, .(id, date, question)]))
+        n_questions <- nrow(unique(subset(dat, select = c(id, date, question))))
         legend("topright",
                legend = paste("Showing", n_questions, "survey questions"),
                pch = NA, box.lty = 0)
@@ -206,7 +226,7 @@ server <- function(input, output) {
         }
         
         # Legend
-        n_questions <- nrow(unique(dat[, .(id, date, question)]))
+        n_questions <- nrow(unique(subset(dat, select = c(id, date, question))))
         legend("topright",
                legend = paste("Showing", n_questions, "survey questions"),
                pch = NA, box.lty = 0)

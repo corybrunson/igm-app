@@ -230,58 +230,45 @@ server <- function(input, output) {
         }
     })
     
-    # Interactive data tables
-    make_table <- function(dt) {
+    # Interactive data table
+    output$plot_topics <- renderDataTable({
+        
+        # Which points
+        res <- if (input$tab == "vs") {
+            if (is.null(input$plot_brush_vs)) {
+                nearPoints(uniqDat(), input$plot_click_vs, "X", "Y")
+            } else {
+                brushedPoints(uniqDat(), input$plot_brush_vs, "X", "Y")
+            }
+        } else if (input$tab == "tri") {
+            if (is.null(input$plot_brush_tri)) {
+                nearPoints(uniqDat(), input$plot_click_tri, "x", "y")
+            } else {
+                brushedPoints(uniqDat(), input$plot_brush_tri, "x", "y")
+            }
+        } else if (input$tab %in% c("specs", "compare", "discuss")) {
+            data.frame()
+        } else {
+            uniqDat()
+        }
+        if (nrow(res) == 0) return()
         
         # Links
-        dt$date_link <- paste0('<a href="',
-                               "http://www.igmchicago.org/",
-                               "igm-economic-experts-panel",
-                               "/poll-results?SurveyID=SV_",
-                               dt$id,
-                               '" target="_blank">',
-                               gsub("^0", "", format(dt$date, "%d %b %Y")),
-                               '</a>')
+        res$date_link <- paste0('<a href="',
+                                 "http://www.igmchicago.org/",
+                                 "igm-economic-experts-panel",
+                                 "/poll-results?SurveyID=SV_",
+                                 res$id,
+                                 '" target="_blank">',
+                                 gsub("^0", "", format(res$date, "%d %b %Y")),
+                                 '</a>')
         
         # Format
-        dt[order(dt$date),
-           .(Date = date_link,
-             Topic = topic,
-             Question = ifelse(question == "", "-", question),
-             Statement = statement)]
-    }
-    
-    # Triangle plot data table
-    output$dt_tri <- renderDataTable({
-        
-        # Which points
-        res <- if(is.null(input$plot_brush_tri)) {
-            nearPoints(uniqDat(), input$plot_click_tri, "X", "Y")
-        } else {
-            brushedPoints(uniqDat(), input$plot_brush_tri, "X", "Y")
-        }
-        if (nrow(res) == 0) return() else make_table(res)
+        res[order(res$date),
+            .(Date = date_link,
+              Topic = topic,
+              Question = ifelse(question == "", "-", question),
+              Statement = statement)]
         
     }, escape = FALSE)
-    
-    # Versus plot data table
-    output$dt_vs <- renderDataTable({
-        
-        # Which points
-        res <- if(is.null(input$plot_brush_vs)) {
-            nearPoints(uniqDat(), input$plot_click_vs, "X", "Y")
-        } else {
-            brushedPoints(uniqDat(), input$plot_brush_vs, "X", "Y")
-        }
-        if (nrow(res) == 0) return() else make_table(res)
-        
-    }, escape = FALSE)
-    
-    # Plotless data table
-    output$dt_dt <- renderDataTable({
-        
-        if (nrow(uniqDat())) return() else make_table(uniqDat())
-        
-    }, escape = FALSE)
-    
 }

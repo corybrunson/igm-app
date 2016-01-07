@@ -1,4 +1,13 @@
 # Install and load packages
+if(FALSE) {
+for (pkg in c("data.table", "shiny", "shinythemes")) {
+    if (!require(pkg, character.only = TRUE)) {
+        install.packages(pkg)
+        stopifnot(require(pkg, character.only = TRUE))
+    }
+}
+}
+library(data.table)
 library(shiny)
 library(shinythemes)
 
@@ -14,10 +23,13 @@ vote.agree <- c(
     "Uncertain" = 0,
     "Agree" = 1, "Strongly Agree" = 1
 )
-allDat$agree <- vote.agree[allDat$vote]
+allDat[, agree := vote.agree[vote]]
 
 # Assign values 0, 1 to Strongly, ~Strongly (caution: 0 for NA)
-allDat$strong <- as.numeric(grepl("Strongly", allDat$vote))
+allDat[, strong := as.numeric(grepl("Strongly", vote))]
 
 # Standardize confidence
-allDat$stdconf <- allDat$confidence / mean(allDat$confidence, na.rm = TRUE)
+allDat[, stdconf := confidence / mean(confidence, na.rm = TRUE)]
+
+# Number of economists polled
+allDat[, count := length(vote), by = list(id, question)]
