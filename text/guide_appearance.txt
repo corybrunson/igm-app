@@ -1,0 +1,1 @@
+<p>Click or brush over points to subset the data. Double-click a brushed rectangle to zoom.</p>

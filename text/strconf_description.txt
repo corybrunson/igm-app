@@ -1,0 +1,7 @@
+<p>Each boxplot below summarizes the distribution of the panelists' confidence levels for each possible opinion. Each point corresponds to a single opinion. (The points are jittered in both dimensions to make their relative numbers visible.)</p>
+
+<p>In principle, there need not be any relationship between a panelist's assessment of the evidence, reflected in their agreement vote, and their confidence in their answer. (A panelist could very cautiously believe that evidence strongly supports a position, or be very confident that it doesn't.) However, the data clearly show that more assertive votes tend to be cast with greater confidence. These confidence levels are also more consistent: the greatest spread in confidence levels occurs among Uncertain votes.</p>
+
+<p>We control for these relationships in two steps: First, we logit-transform the confidence values, which range from 1 to 10, along a scale from 0 to 11. This gives the agreement-specific distributions a more consistent shape, except for the overrepresentation of 1s among the Uncertain votes. (To see this effect, click the Logit button on the left.) From these, we calculate confidence Z-scores for each stratum of agreement strength: uncertainty, (dis)agreement, and strong (dis)agreement.</p>
+
+<p>In the other <strong>Plots</strong>, the user controls the scale by which responses are adjusted by these Z-scores. Details are in the <strong>Discussion</strong>.</p>

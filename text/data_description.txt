@@ -1,0 +1,5 @@
+<p>Below are the topics and full statements for each question. Use the filters on the first panel at left to highlight or isolate the questions answered by a specific panelist or involving a specific topic.</p>
+
+<p>For the full listing and distribution of the panelists' responses, click the date field. Full code to scrape the survey website, clean the data, and build this app is available on <a href="https://github.com/corybrunson/igm-app">GitHub</a>. (For another nifty app, with a (dual) focus on the panelists rather than the questions, see Chris Said's <a href="http://whichfamouseconomistareyoumostsimilarto.com/">Which Famous Economist</a> website.)</p>
+
+<p>The three <strong>Plots</strong> explore these data with different questions in mind.</p>

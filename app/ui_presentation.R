@@ -6,8 +6,8 @@ ui <- fluidPage(
         column(3,
                conditionalPanel(
                    condition = paste(paste0("input.tab == '",
-                                            c("data", "vs", "tri"),
-                                            "'"),
+                                           c("intro", "vs", "tri"),
+                                           "'"),
                                      collapse = " || "),
                    wellPanel(
                        #h4("Subsetting"),
@@ -36,8 +36,6 @@ ui <- fluidPage(
                    condition = "(input.tab == 'vs' || input.tab == 'tri')",
                    wellPanel(
                        #h4("Positioning"),
-                       HTML(paste(readLines("text/guide_sliders.txt"),
-                                  collapse = "")),
                        sliderInput("str.wt",
                                    "(Dis)agreement strength",
                                    0, 1, 0),
@@ -48,9 +46,7 @@ ui <- fluidPage(
                    wellPanel(
                        #h4("Appearance"),
                        sliderInput("cex.base", "Point size", .1, .5, .3),
-                       sliderInput("alpha", "Transparency", 0, 1, .2),
-                       HTML(paste(readLines("text/guide_appearance.txt"),
-                                  collapse = ""))
+                       sliderInput("alpha", "Transparency", 0, 1, .2)
                    )
                )
         ),
@@ -59,25 +55,16 @@ ui <- fluidPage(
                    id = "tab",
                    tabPanel(
                        "Introduction", value = "intro",
-                       HTML(paste(readLines("text/description.txt"),
-                                  collapse = ""))
-                   ),
-                   tabPanel(
-                       "Data", value = "data",
-                       HTML(paste(readLines("text/data_description.txt"),
-                                  collapse = ""))
+                       h3("Survey data")
                    ),
                    tabPanel(
                        "Confidence Plot", value = "strconf",
-                       HTML(paste(readLines("text/strconf_description.txt"),
-                                  collapse = "")),
-                       plotOutput("strconf", height = "500px", width = "700px")
+                       h3("Strength and confidence"),
+                       plotOutput("strconf", height = "500px")
                    ),
                    tabPanel(
                        "Agreement Plot", value = "tri",
-                       HTML(paste(c(readLines("text/tri_description.txt"),
-                                    readLines("text/plot_guide.txt")),
-                                  collapse = "")),
+                       h3("Uncertainty and (dis)agreement"),
                        plotOutput("tri", height = "750px",
                                   click = "plot_click_tri",
                                   brush = brushOpts(id = "plot_brush_tri",
@@ -87,10 +74,8 @@ ui <- fluidPage(
                    ),
                    tabPanel(
                        "Consensus Plot", value = "vs",
-                       HTML(paste(c(readLines("text/vs_description.txt"),
-                                    readLines("text/plot_guide.txt")),
-                                  collapse = "")),
-                       plotOutput("vs", height = "500px", width = "700px",
+                       h3("Uncertainty and consensus"),
+                       plotOutput("vs", height = "500px",
                                   click = "plot_click_vs",
                                   brush = brushOpts(id = "plot_brush_vs",
                                                     delayType = "debounce",

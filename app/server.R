@@ -9,6 +9,43 @@ library(dplyr)
 # Server
 server <- function(input, output) {
     
+    # Strength-confidence plot
+    output$strconf <- renderPlot({
+        
+        # Retrieve highlighted data
+        dat <- allDat
+        
+        # Confidence variable
+        dat$conf_var <- if (input$conf.var == "Raw") {
+            dat$confidence
+        } else {
+            dat$logit.conf
+        }
+        
+        # Confidence distribution across vote options
+        boxplot(conf_var ~ factor(vote), data = dat, outline = FALSE,
+                xlab = "Vote",
+                ylab = if (input$conf.var == "Raw") "Confidence" else
+                    "Logit-Confidence")
+        points(x = jitter(as.numeric(factor(dat$vote))),
+               y = jitter(dat$conf_var),
+               pch = 16, cex = .33, col = rgb(0, 0, 0, .33))
+        
+        # Standard deviations
+        mean_sd <- summarise(
+            group_by(dat, vote),
+            mean = mean(conf_var, na.rm = TRUE),
+            sd = sd(conf_var, na.rm = TRUE)
+        )
+        mean_sd <- mean_sd[order(mean_sd$vote, na.last = NA), ]
+        means_sds <- paste0(sprintf("%.1f", round(mean_sd$mean, 1)), " (",
+                            sprintf("%.1f", round(mean_sd$sd, 1)), ")")
+        
+        # Axis
+        axis(side = 3, at = 1:5, tck = 0, labels = means_sds)
+        mtext(side = 3, line = 3, text = "Mean (std dev)")
+    })
+    
     # Highlight by key strings
     hlDat <- reactive({
         
@@ -52,8 +89,9 @@ server <- function(input, output) {
             X = sum((1 - input$conf.wt + input$conf.wt * stdconf) *
                         as.numeric(agree == 0), na.rm = TRUE) /
                 sum(1 - input$conf.wt + input$conf.wt * stdconf, na.rm = TRUE),
-            Y = sum(apply(combn(sign(agree), 2), 2, prod), na.rm = TRUE) /
-                choose(length(which(agree != 0 & !is.na(agree))), 2),
+            Y = consensus(agree * (1 + input$str.wt * strong)),
+            #Y = sum(apply(combn(sign(agree), 2), 2, prod), na.rm = TRUE) /
+            #    choose(length(which(agree != 0 & !is.na(agree))), 2),
             x = x(c(sum((1 - input$conf.wt + input$conf.wt * stdconf) *
                             (1 + input$str.wt * strong) *
                             as.numeric(agree == -1),
@@ -100,15 +138,15 @@ server <- function(input, output) {
         
         # Check row count
         stopifnot(nrow(dat) == nrow(num))
-        output$q <- renderText({ nrow(dat) })
+        output$q <- renderText(nrow(dat))
         
         # Merge count into dat
         dat <- merge(dat, num, by = c("id", "question"))
         
         # Subset
-        if (any(dat$hl.panelist) & input$p_subset)
+        if (any(dat$hl.panelist) & !input$p_subset)
             dat <- dat[hl.panelist == TRUE, ]
-        if (any(dat$hl.topic) & input$t_subset)
+        if (any(dat$hl.topic) & !input$t_subset)
             dat <- dat[hl.topic == TRUE, ]
         if (all(dat$hl.topic)) dat$hl.topic <- FALSE
         
@@ -135,14 +173,14 @@ server <- function(input, output) {
         # Points!
         points(x = dat$X, y = dat$Y,
                pch = 19, cex = input$cex.base * sqrt(dat$count),
-               col = if (input$t_subset) {
+               col = if (!input$t_subset) {
                    rgb(0, 0, 0, input$alpha)
                } else {
                    rgb(ifelse(dat$hl.topic, 1, 0), 0, 0, input$alpha)
                })
         
         # Circles
-        if (!input$p_subset) {
+        if (!!input$p_subset) {
             points(x = dat$X, y = dat$Y,
                    pch = ifelse(dat$hl.panelist, 1, NA),
                    cex = 1.5 * input$cex.base * sqrt(dat$count),
@@ -211,14 +249,14 @@ server <- function(input, output) {
         # Points!
         points(x = dat$x, y = dat$y,
                pch = 19, cex = input$cex.base * sqrt(dat$count),
-               col = if (input$t_subset) {
+               col = if (!input$t_subset) {
                    rgb(0, 0, 0, input$alpha)
                } else {
                    rgb(ifelse(dat$hl.topic, 1, 0), 0, 0, input$alpha)
                })
         
         # Circles
-        if (!input$p_subset) {
+        if (!!input$p_subset) {
             points(x = dat$x, y = dat$y,
                    pch = ifelse(dat$hl.panelist, 1, NA),
                    cex = 1.5 * input$cex.base * sqrt(dat$count),
@@ -266,7 +304,7 @@ server <- function(input, output) {
             } else {
                 brushedPoints(uniqDat(), input$plot_brush_tri, "x", "y")
             }
-        } else if (input$tab %in% c("specs", "compare", "discuss")) {
+        } else if (input$tab %in% c("intro", "discuss", "strconf")) {
             data.frame()
         } else {
             uniqDat()
@@ -275,13 +313,13 @@ server <- function(input, output) {
         
         # Links
         res$date_link <- paste0('<a href="',
-                                 "http://www.igmchicago.org/",
-                                 "igm-economic-experts-panel",
-                                 "/poll-results?SurveyID=SV_",
-                                 res$id,
-                                 '" target="_blank">',
-                                 gsub("^0", "", format(res$date, "%d %b %Y")),
-                                 '</a>')
+                                "http://www.igmchicago.org/",
+                                "igm-economic-experts-panel",
+                                "/poll-results?SurveyID=SV_",
+                                res$id,
+                                '" target="_blank">',
+                                gsub("^0", "", format(res$date, "%d %b %Y")),
+                                '</a>')
         
         # Format
         res[order(res$date),
@@ -290,5 +328,5 @@ server <- function(input, output) {
               Question = ifelse(question == "", "-", question),
               Statement = statement)]
         
-    }, escape = FALSE)
+    }, escape = FALSE, options = list(paging = FALSE, searching = FALSE))
 }

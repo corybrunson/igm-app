@@ -32,10 +32,10 @@ name.alph <- function(name) {
 # Scrape the home page for survey page URLs
 get.surveys <- function(url) {
     page <- read_html(url)
-    # selectorgadget
+    # SelectorGadget
     elts <- html_nodes(page, 'h2 a')
     dates <- html_nodes(page, 'h6')
-    # end selectorgadget
+    # end SelectorGadget
     data.table(
         topic = elts %>% html_text(),
         id = survey.id(elts %>% html_attr('href')),
@@ -55,13 +55,13 @@ pool.na <- function(vote) {
 # Scrape a survey page for panelist responses
 get.responses <- function(url) {
     page <- read_html(url)
-    # selectorgadget
+    # SelectorGadget
     panelist <- html_nodes(page, '.response-name a')
     uni <- html_nodes(page, '.parent-row td:nth-child(2)')
     vote <- html_nodes(page, '#sort0 span')
     conf <- html_nodes(page, '.confCell')
     comm <- html_nodes(page, '.gridComment')
-    # end selectorgadget
+    # end SelectorGadget
     data.table(
         panelist = name.alph(gsub('(\\n|\\t)', '', panelist %>% html_text())),
         uni = uni %>% html_text(),

@@ -8,7 +8,23 @@
 The Agreement Plot arranges the survey questions on the <b>2-simplex</b>, which is the triangle connecting the points (1,0,0), (0,1,0), and (0,0,1) in 3-space and its interior. Their positions are encoded as <b>homogeneous coordinates</b>: The numbers of panelists who agree with, disagree with, and are uncertain about each question form a triple (a,d,u), possibly weighted by strength of (dis)agreement or confidence. These coordinates determine a line through the origin (which would be the same line if the coordinates were scaled together). Since the coordinates are all nonnegative, the line passes through the 2-simplex; this intersection locates the question in the plot. (This scheme is adapted from correspondence analysis.)
 
 <div class="p"><!----></div>
-For each panelist i=1,&#8230;,N and each question j=1,&#8230;,M, encode i's response to j as strong agreement (r<sub>ij</sub>=+1+&#963;), agreement (r<sub>ij</sub>=+1), uncertainty (r<sub>ij</sub>=0), disagreement (r<sub>ij</sub>=&#8722;1), or strong disagreement (r<sub>ij</sub>=&#8722;1&#8722;&#963;), where &#963; &#8712; [0,1] is a tuning parameter controlled by the user. (r<sub>ij</sub> is not defined if i left no opinion on j.) The panelists also recorded their confidence C<sub>ij</sub> &#8712; [1,9] in their answers; we standardize this measure to C&#8242;<sub>ij</sub>=C<sub>ij</sub>/<span class="overacc2">&#x2015;</span>C and calculate <em>confidence weights</em> c<sub>ij</sub>=1&#8722;&#947;+&#947;C&#8242;<sub>ij</sub>, where &#947; &#8712; [0,1] is a tuning parameter, also controlled by the user, that interpolates between c<sub>ij</sub> &#8801; 1 and c<sub>ij</sub>=C&#8242;<sub>ij</sub>.
+For each panelist i=1,&#8230;,N and each question j=1,&#8230;,M, encode i's response to j as strong agreement (r<sub>ij</sub>=+1+&#963;), agreement (r<sub>ij</sub>=+1), uncertainty (r<sub>ij</sub>=0), disagreement (r<sub>ij</sub>=&#8722;1), or strong disagreement (r<sub>ij</sub>=&#8722;1&#8722;&#963;), where &#963; &#8712; [0,1] is a tuning parameter controlled by the user. (r<sub>ij</sub> is not defined if i left no opinion on j.) The panelists also recorded their confidence C<sub>ij</sub> &#8712; [1,10] in their answers. We logit-transform these values to
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center" cellspacing="0"  cellpadding="2"><tr><td nowrap="nowrap" align="center">
+C&#8242;<sub>ij</sub>=log(C<sub>ij</sub>/(11&#8722;C<sub>ij</sub>)),</td></tr></table>
+</td></tr></table>
+
+
+take Z-scores
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center" cellspacing="0"  cellpadding="2"><tr><td nowrap="nowrap" align="center">
+Z<sub>ij</sub>=(C&#8242;<sub>ij</sub>&#8722;m<sub>r</sub>)/s<sub>r</sub></td></tr></table>
+</td></tr></table>
+
+
+specific to each response r (with m<sub>r</sub> and s<sub>r</sub> the response-specific mean and standard deviation), and calculate <em>confidence weights</em> c<sub>ij</sub>=1+&#947;Z<sub>ij</sub>, where &#947; &#8712; [0,1/3] is a tuning parameter, also controlled by the user.
 
 <div class="p"><!----></div>
 The <em>agreement</em> on question j is a(j)=&#8721;<sub>r<sub>ij</sub> &gt; 0</sub>c<sub>ij</sub>r<sub>ij</sub>, the sum of the agreeing responses, weighted by both confidence and strength of agreement; the <em>disagreement</em> d(j) is defined analogously. The <em>uncertainty</em> is u(j)=&#8721;<sub>r<sub>ij</sub>=0</sub>c<sub>ij</sub>, the weighted sum of the uncertain responses. The standardized coordinates (a(j),d(j),u(j))/(d(j)+a(j)+u(j)) are then projected to two dimensions via linear transformations:
