@@ -60,9 +60,12 @@ server <- function(input, output) {
         }
         
         # Spotlight topics
-        dat$hl.topic <- grepl(tolower(input$topic),
-                              tolower(paste(dat$topic, dat$statement)))
-        if (all(dat$hl.topic)) dat$hl.topic <- FALSE
+        dat$hl.topic <- if (input$topic == "") {
+            TRUE
+        } else {
+            grepl(input$topic, paste(dat$topic, dat$statement))
+        }
+        #if (all(dat$hl.topic)) dat$hl.topic <- FALSE
         
         # Group by ID and question
         by_id_question <- group_by(dat, id, question)
@@ -146,9 +149,9 @@ server <- function(input, output) {
         # Subset
         if (any(dat$hl.panelist) & !input$p_subset)
             dat <- dat[hl.panelist == TRUE, ]
-        if (any(dat$hl.topic) & !input$t_subset)
+        if (!input$t_subset) # & any(dat$hl.topic)
             dat <- dat[hl.topic == TRUE, ]
-        if (all(dat$hl.topic)) dat$hl.topic <- FALSE
+        #if (all(dat$hl.topic)) dat$hl.topic <- FALSE
         
         dat
     })

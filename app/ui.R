@@ -19,7 +19,7 @@ ui <- fluidPage(
                            choices = c("-", sort(unique(allDat$panelist)))
                        ),
                        checkboxInput("p_subset", "Highlight only"),
-                       textInput("topic", "Regex, e.g. 'gree(k|ce)':"),
+                       textInput("topic", "Regex, e.g. 'Gree(k|ce)':"),
                        checkboxInput("t_subset", "Highlight only")
                    )
                ),

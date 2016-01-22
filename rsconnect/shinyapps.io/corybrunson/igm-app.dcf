@@ -2,6 +2,6 @@ name: igm-app
 account: corybrunson
 server: shinyapps.io
 appId: 76171
-bundleId: 345317
+bundleId: 355424
 url: https://corybrunson.shinyapps.io/igm-app/
-when: 1452204067.653
+when: 1453497240.41642

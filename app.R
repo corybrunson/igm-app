@@ -2,7 +2,7 @@
 source("app/server.R")
 
 # Source user interface
-# http://hutchinson.belmont.ma.us/tth/manual/sec3.html
+# TeX to html: http://hutchinson.belmont.ma.us/tth/manual/sec3.html
 source("app/ui.R")
 
 # Run app!
