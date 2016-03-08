@@ -41,8 +41,10 @@ mean.conf <- sapply(levels(allDat$strength), function(lev) {
 })
 sd.conf <- sd(allDat$logit.conf, na.rm = TRUE)
 
-# Standardized logit-confidence
-allDat$stdlogitconf <- (allDat$logit.conf - mean.conf[allDat$strength]) / sd.conf
+# Standardized confidence (logit-center-inverse logit)
+allDat$stdlogitconf <- plogis(
+    (allDat$logit.conf - mean.conf[allDat$strength]) / sd.conf
+) * 11
 
 # Remove unnecessary values
 allDat$strength <- NULL

@@ -44,7 +44,7 @@ ui <- fluidPage(
                                    0, 1, 0),
                        sliderInput("conf.wt",
                                    "Confidence",
-                                   0, .33, 0)
+                                   0, 1, 0)
                    ),
                    wellPanel(
                        #h4("Appearance"),

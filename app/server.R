@@ -157,7 +157,7 @@ server <- function(input, output) {
     })
     
     # Versus plot range
-    range_vs <- reactiveValues(x = c(0, 1), y = c(-1/5, 1))
+    range_vs <- reactiveValues(x = c(0, 1), y = c(0, 1))
     
     # Versus plot!
     output$vs <- renderPlot({
@@ -171,7 +171,7 @@ server <- function(input, output) {
         plot(x = c(), y = c(), bty = "n",
              xlim = Xran, ylim = Yran,
              xlab = "Uncertainty", ylab = "Consensus")
-        abline(h = 0, lty = 3, col = rgb(0, 0, 0, sqrt(input$alpha)))
+        #abline(h = 0, lty = 3, col = rgb(0, 0, 0, sqrt(input$alpha)))
         
         # Points!
         points(x = dat$X, y = dat$Y,
@@ -206,7 +206,7 @@ server <- function(input, output) {
         # If brush, zoom; otherwise, reset
         if (is.null(brush_val)) {
             range_vs$x <- c(0, 1)
-            range_vs$y <- c(-1/5, 1)
+            range_vs$y <- c(0, 1)
         } else {
             range_vs$x <- c(brush_val$xmin, brush_val$xmax)
             range_vs$y <- c(brush_val$ymin, brush_val$ymax)
