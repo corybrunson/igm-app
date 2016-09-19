@@ -17,11 +17,14 @@ ui <- fluidPage(
                        selectInput(
                            inputId = "panelist",
                            label = "Answered by:",
-                           choices = c("-", sort(unique(allDat$panelist)))
+                           choices = c(
+                             "-",
+                             sort(unique(as.character(allDat$panelist)))
+                           )
                        ),
                        checkboxInput("p_subset", "Highlight only"),
                        textInput("topic", "Regex, e.g. 'Gree(k|ce)':"),
-                       checkboxInput("t_subset", "Highlight only"),
+                       checkboxInput("t_subset", "Spotlight only"),
                        HTML(paste(readLines("text/guide_subset.txt"),
                                   collapse = ""))
                    )

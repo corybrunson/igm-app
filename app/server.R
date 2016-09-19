@@ -176,16 +176,16 @@ server <- function(input, output) {
         # Points!
         points(x = dat$X, y = dat$Y,
                pch = 19, cex = input$cex.base * sqrt(dat$count),
-               col = if (!input$t_subset) {
+               col = if (!input$p_subset) {
                    rgb(0, 0, 0, input$alpha)
                } else {
-                   rgb(ifelse(dat$hl.topic, 1, 0), 0, 0, input$alpha)
+                   rgb(ifelse(dat$hl.panelist, 1, 0), 0, 0, input$alpha)
                })
         
         # Circles
-        if (!!input$p_subset) {
+        if (!!input$t_subset) {
             points(x = dat$X, y = dat$Y,
-                   pch = ifelse(dat$hl.panelist, 1, NA),
+                   pch = ifelse(dat$hl.topic, 1, NA),
                    cex = 1.5 * input$cex.base * sqrt(dat$count),
                    col = rgb(0, 0, 1, sqrt(input$alpha)))
         }
@@ -252,16 +252,16 @@ server <- function(input, output) {
         # Points!
         points(x = dat$x, y = dat$y,
                pch = 19, cex = input$cex.base * sqrt(dat$count),
-               col = if (!input$t_subset) {
+               col = if (!input$p_subset) {
                    rgb(0, 0, 0, input$alpha)
                } else {
-                   rgb(ifelse(dat$hl.topic, 1, 0), 0, 0, input$alpha)
+                   rgb(ifelse(dat$hl.panelist, 1, 0), 0, 0, input$alpha)
                })
         
         # Circles
-        if (!!input$p_subset) {
+        if (!!input$t_subset) {
             points(x = dat$x, y = dat$y,
-                   pch = ifelse(dat$hl.panelist, 1, NA),
+                   pch = ifelse(dat$hl.topic, 1, NA),
                    cex = 1.5 * input$cex.base * sqrt(dat$count),
                    col = rgb(0, 0, 1, sqrt(input$alpha)))
         }
