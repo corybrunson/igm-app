@@ -54,7 +54,7 @@ ui <- fluidPage(
                    wellPanel(
                        #h4("Appearance"),
                        sliderInput("cex.base", "Point size", .1, .5, .3),
-                       sliderInput("alpha", "Transparency", 0, 1, .2)
+                       sliderInput("alpha", "Opacity", 0, 1, .2)
                    )
                )
         ),
