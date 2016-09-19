@@ -21,7 +21,9 @@ ui <- fluidPage(
                        ),
                        checkboxInput("p_subset", "Highlight only"),
                        textInput("topic", "Regex, e.g. 'Gree(k|ce)':"),
-                       checkboxInput("t_subset", "Highlight only")
+                       checkboxInput("t_subset", "Highlight only"),
+                       HTML(paste(readLines("text/guide_subset.txt"),
+                                  collapse = ""))
                    )
                ),
                conditionalPanel(
@@ -49,9 +51,7 @@ ui <- fluidPage(
                    wellPanel(
                        #h4("Appearance"),
                        sliderInput("cex.base", "Point size", .1, .5, .3),
-                       sliderInput("alpha", "Transparency", 0, 1, .2),
-                       HTML(paste(readLines("text/guide_appearance.txt"),
-                                  collapse = ""))
+                       sliderInput("alpha", "Transparency", 0, 1, .2)
                    )
                )
         ),

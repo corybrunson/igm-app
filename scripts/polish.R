@@ -2,11 +2,10 @@
 library(shiny)
 library(shinythemes)
 
-# Scrape data if necessary
-if (!file.exists("data/igm.rds")) source("scripts/scrape.R")
-
 # Load stored survey data
-allDat <- readRDS("data/igm.rds")
+load("data/igmpanel.rda")
+allDat <- igmpanel
+rm(igmpanel)
 
 # Assign values -1, 0, 1 to Disagree, Uncertain, Agree
 vote.agree <- c(
@@ -14,7 +13,7 @@ vote.agree <- c(
     "Uncertain" = 0,
     "Agree" = 1, "Strongly Agree" = 1
 )
-allDat$agree <- vote.agree[allDat$vote]
+allDat$agree <- vote.agree[as.character(allDat$vote)]
 
 # Factorize vote field
 allDat$vote <- factor(allDat$vote, levels = names(vote.agree))

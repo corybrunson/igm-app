@@ -148,9 +148,9 @@ server <- function(input, output) {
         
         # Subset
         if (any(dat$hl.panelist) & !input$p_subset)
-            dat <- dat[hl.panelist == TRUE, ]
+            dat <- filter(dat, hl.panelist == TRUE)
         if (!input$t_subset) # & any(dat$hl.topic)
-            dat <- dat[hl.topic == TRUE, ]
+            dat <- filter(dat, hl.topic == TRUE)
         #if (all(dat$hl.topic)) dat$hl.topic <- FALSE
         
         dat
@@ -325,11 +325,11 @@ server <- function(input, output) {
                                 '</a>')
         
         # Format
-        res[order(res$date),
-            .(Date = date_link,
-              Topic = topic,
-              Question = ifelse(question == "", "-", question),
-              Statement = statement)]
-        
+        transmute(res[order(res$date), ],
+                  Date = date_link,
+                  Topic = topic,
+                  Question = ifelse(question == "", "-", question),
+                  Statement = statement)
+
     }, escape = FALSE, options = list(paging = FALSE, searching = FALSE))
 }
