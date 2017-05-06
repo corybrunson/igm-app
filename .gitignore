@@ -1,2 +1,10 @@
+# Mac stuff
+.DS_Store
+*/.DS_Store
+
 # R stuff
 .Rhistory
+*/.Rhistory
+.RData
+*/.RData
+
