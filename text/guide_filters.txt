@@ -1,1 +1,1 @@
-<p>Limit to questions answered by a panelist or involving a topic.</p>
+<p>Limit questions to one dataset, panelist, or topic.</p>
