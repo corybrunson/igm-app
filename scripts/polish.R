@@ -3,9 +3,9 @@ library(shiny)
 library(shinythemes)
 
 # Load stored survey data
-load("data/igmpanel.rda")
-allDat <- igmpanel
-rm(igmpanel)
+load("data/igm.rda")
+allDat <- igm
+rm(igm)
 
 # Assign values -1, 0, 1 to Disagree, Uncertain, Agree
 vote.agree <- c(
