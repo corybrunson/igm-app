@@ -31,11 +31,11 @@ cfm <- cfm %>%
                                              "Confident",
                                              "Very confident",
                                              "Extremely confident")) * 2 - .5)
-allDat <- bind_rows(
+allDat <- suppressWarnings(bind_rows(
   transform(igm, source = "IGM"),
   transform(eigm, source = "EIGM"),
   transform(cfm, source = "CFM")
-)
+))
 rm(igm, eigm, cfm)
 
 # Assign values -1, 0, 1 to Disagree, Uncertain, Agree

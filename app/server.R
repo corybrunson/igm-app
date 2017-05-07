@@ -1,10 +1,10 @@
+library(dplyr)
+
 # Load and polish data
 source("scripts/polish.R")
 
 # Source triangle coordinate functions (used in server script)
 source("scripts/fun_coord.R")
-
-library(dplyr)
 
 # Server
 server <- function(input, output) {
