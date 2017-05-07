@@ -49,11 +49,7 @@ server <- function(input, output) {
   # Restrict to desired dataset
   srcDat <- reactive({
     
-    if (input$dataset == "-") {
-      allDat
-    } else {
-      allDat[allDat$source == input$dataset, ]
-    }
+    allDat[allDat$source %in% input$dataset, ]
   })
   
   # Highlight by key strings
@@ -146,7 +142,7 @@ server <- function(input, output) {
     # Only one entry per question
     dat <- unique(subset(dat,
                          select = c(id, date, question, topic, statement,
-                                    hl.panelist, hl.topic,
+                                    source, hl.panelist, hl.topic,
                                     X, Y, x, y)))
     
     # Check row count
@@ -184,13 +180,15 @@ server <- function(input, output) {
     #abline(h = 0, lty = 3, col = rgb(0, 0, 0, sqrt(input$alpha)))
     
     # Points!
+    colbg <- if (!input$p_subset) {
+      rgb(0, 0, 0, input$alpha)
+    } else {
+      rgb(ifelse(dat$hl.panelist, 1, 0), 0, 0, input$alpha)
+    }
     points(x = dat$X, y = dat$Y,
-           pch = 19, cex = input$cex.base * sqrt(dat$count),
-           col = if (!input$p_subset) {
-             rgb(0, 0, 0, input$alpha)
-           } else {
-             rgb(ifelse(dat$hl.panelist, 1, 0), 0, 0, input$alpha)
-           })
+           pch = c(21, 22, 24)[match(dat$source, c("IGM", "EIGM", "CFM"))],
+           cex = input$cex.base * sqrt(dat$count),
+           col = colbg, bg = colbg)
     
     # Circles
     if (!!input$t_subset) {
@@ -203,8 +201,11 @@ server <- function(input, output) {
     # Legend
     n_questions <- nrow(unique(subset(dat, select = c(id, date, question))))
     legend("topright",
-           legend = paste("Showing", n_questions, "survey questions"),
-           pch = NA, box.lty = 0)
+           legend = c(paste("Showing", n_questions, "survey questions"),
+                      "IGM", "EIGM", "CFM"),
+           pch = c(NA, 21, 22, 24),
+           col = rgb(0, 0, 0, input$alpha), pt.bg = rgb(0, 0, 0, input$alpha),
+           box.lty = 0)
   })
   
   # Versus plot zoom
@@ -260,13 +261,15 @@ server <- function(input, output) {
          pos = 3 + c(-1, -1, 1), cex = 1.2)
     
     # Points!
+    colbg <- if (!input$p_subset) {
+      rgb(0, 0, 0, input$alpha)
+    } else {
+      rgb(ifelse(dat$hl.panelist, 1, 0), 0, 0, input$alpha)
+    }
     points(x = dat$x, y = dat$y,
-           pch = 19, cex = input$cex.base * sqrt(dat$count),
-           col = if (!input$p_subset) {
-             rgb(0, 0, 0, input$alpha)
-           } else {
-             rgb(ifelse(dat$hl.panelist, 1, 0), 0, 0, input$alpha)
-           })
+           pch = c(21, 22, 24)[match(dat$source, c("IGM", "EIGM", "CFM"))],
+           cex = input$cex.base * sqrt(dat$count),
+           col = colbg, bg = colbg)
     
     # Circles
     if (!!input$t_subset) {
@@ -279,8 +282,11 @@ server <- function(input, output) {
     # Legend
     n_questions <- nrow(unique(subset(dat, select = c(id, date, question))))
     legend("topright",
-           legend = paste("Showing", n_questions, "survey questions"),
-           pch = NA, box.lty = 0)
+           legend = c(paste("Showing", n_questions, "survey questions"),
+                      "IGM", "EIGM", "CFM"),
+           pch = c(NA, 21, 22, 24),
+           col = rgb(0, 0, 0, input$alpha), pt.bg = rgb(0, 0, 0, input$alpha),
+           box.lty = 0)
   })
   
   # Triangle plot zoom

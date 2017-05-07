@@ -14,13 +14,12 @@ ui <- fluidPage(
                #h4("Subsetting"),
                HTML(paste(readLines("text/guide_filters.txt"),
                           collapse = "")),
-               selectInput(
+               checkboxGroupInput(
                  inputId = "dataset",
-                 label = "From survey:",
-                 choices = c(
-                   "-",
-                   sort(unique(as.character(allDat$source)))
-                 )
+                 label = "Surveys:",
+                 choices = unique(as.character(allDat$source)),
+                 selected = unique(as.character(allDat$source)),
+                 inline = TRUE
                ),
                selectInput(
                  inputId = "panelist",
