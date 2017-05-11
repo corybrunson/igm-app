@@ -331,14 +331,17 @@ server <- function(input, output) {
     if (nrow(res) == 0) return()
     
     # Links
-    res$date_link <- paste0('<a href="',
-                            "http://www.igmchicago.org/",
-                            "igm-economic-experts-panel",
-                            "/poll-results?SurveyID=SV_",
-                            res$id,
-                            '" target="_blank">',
-                            gsub("^0", "", format(res$date, "%d %b %Y")),
-                            '</a>')
+    res <- transform(
+      res,
+      date_link = paste0('<a href="',
+                         ifelse(source == "CFM",
+                                "http://cfmsurvey.org/surveys/",
+                                "http://www.igmchicago.org/surveys/"),
+                         res$id,
+                         '" target="_blank">',
+                         gsub("^0", "", format(res$date, "%d %b %Y")),
+                         '</a>')
+    )
     
     # Format
     transmute(res[order(res$date), ],
