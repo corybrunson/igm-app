@@ -1,7 +1,6 @@
 # User interface
 ui <- fluidPage(
   theme = shinytheme("cosmo"),
-  #titlePanel("Situating consensus for the IGM surveys"),
   titlePanel("the shape of economic opinion"),
   fluidRow(
     column(3,

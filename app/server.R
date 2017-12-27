@@ -333,12 +333,16 @@ server <- function(input, output) {
     # Links
     res <- transform(
       res,
-      date_link = paste0('<a href="',
+      date_link = paste0('<a',
+                         ' id=', format(res$date, "%Y-%m-%d"),
+                         '-', res$id, '-', res$question,
+                         ' href="',
                          ifelse(source == "CFM",
                                 "http://cfmsurvey.org/surveys/",
                                 "http://www.igmchicago.org/surveys/"),
                          res$id,
                          '" target="_blank">',
+                         #gsub("^0", "", format(res$date, "%d %b %Y")),
                          gsub("^0", "", format(res$date, "%d %b %Y")),
                          '</a>')
     )
